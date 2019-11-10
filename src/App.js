@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Movie from './Movie';
@@ -22,14 +22,38 @@ const movies = [
     }
 ]
 
-function App() {
-  return (
-    <div className="App">
-        {movies.map(movie => {
-            return <Movie title={movie.title} poster={movie.poster} />
-        })}
-    </div>
-  );
+class App extends Component {
+
+    componentWillMount() {
+        console.log('will mount');
+    }
+
+    componentDidMount() {
+        console.log('did mount');
+        setTimeout(() => {
+            this.state.greeting = 'something' // 직접적으로 state를 변경하면 render는 동작되지 않는다.
+            this.setState({
+                greeting: 'Hello again!'
+            })
+        }, 5000);
+    }
+
+    state = {
+        greeting: 'Hello!'
+    }
+    
+    render() {
+        console.log('rendering now');
+
+        return (
+            <div className="App">
+                {this.state.greeting}
+                {movies.map( (movie, index) => {
+                    return <Movie title={movie.title} poster={movie.poster} key={index} />
+                })}
+            </div>
+          );
+    }
 }
 
 export default App;
