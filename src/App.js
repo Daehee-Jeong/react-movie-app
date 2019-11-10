@@ -4,45 +4,52 @@ import './App.css';
 import Movie from './Movie';
 
 class App extends Component {
+    state = {
+        isLoading: true,
+        movies: []
+    };
 
-    state = {}
-
-    componentDidMount() {
-        this._getMovies();
-    }
-
-    _renderMovies = () => {
-        const movies = this.state.movies.map( (movie) => {
-            return <Movie 
-            title={movie.title_english} 
-            poster={movie.medium_cover_image} 
-            key={movie.id} 
-            genres={movie.genres} 
-            synopsis={movie.synopsis}/>
-        })
-        return movies
-    }
-
-    _getMovies = async () => {
-        const movies = await this._callApi()
-        this.setState({
-            movies
-        })
-    }
-
-    _callApi = () => {
-        return fetch('https://yts.lt/api/v2/list_movies.json?sort_by=rating')
+    getMovies = async () => {
+        const movies = await fetch(
+            "https://yts-proxy.now.sh/list_movies.json?sort_by=rating"
+        )
         .then(response => response.json())
         .then(json => json.data.movies)
         .catch(err => console.log(err))
+        ;
+        this.setState({ movies, isLoading: false });
+    };
+
+    componentDidMount() {
+        this.getMovies();
     }
-    
+
     render() {
+        const { isLoading, movies } = this.state;
+
         return (
-            <div className="App">
-                {this.state.movies ? this._renderMovies() : 'Loading'}
-            </div>
-          );
+            <section className="container">
+            {isLoading ? (
+                <div className="loader">
+                    <span className="loader__text">Loading...</span>
+                </div>
+            ) : (
+                <div className="movies">
+                    {movies.map(movie => (
+                        <Movie
+                            key={movie.id}
+                            id={movie.id}
+                            year={movie.year}
+                            title={movie.title}
+                            summary={movie.summary}
+                            poster={movie.medium_cover_image}
+                            genres={movie.genres}
+                        />
+                    ))}
+                </div>
+            )}
+            </section>
+        );
     }
 }
 
