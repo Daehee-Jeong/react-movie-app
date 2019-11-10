@@ -25,10 +25,9 @@ const movies = [
 function App() {
   return (
     <div className="App">
-        <Movie title={movies[0].title} poster={movies[0].poster} />
-        <Movie title={movies[1].title} poster={movies[1].poster} />
-        <Movie title={movies[2].title} poster={movies[2].poster} />
-        <Movie title={movies[3].title} poster={movies[3].poster} />
+        {movies.map(movie => {
+            return <Movie title={movie.title} poster={movie.poster} />
+        })}
     </div>
   );
 }
